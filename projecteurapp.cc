@@ -75,8 +75,7 @@ ProjecteurApplication::ProjecteurApplication(int &argc, char **argv)
 
   window->setScreen(screen);
   window->setPosition(screen->availableGeometry().topLeft());
-  window->setFlag(Qt::WindowTransparentForInput, true);
-  window->setFlag(Qt::Tool, true);
+  window->setFlags(window->flags() | Qt::WindowTransparentForInput | Qt::Tool);
 
   connect(this, &ProjecteurApplication::aboutToQuit, [window](){ if (window) window->close(); });
 
@@ -90,19 +89,19 @@ ProjecteurApplication::ProjecteurApplication(int &argc, char **argv)
   connect(spotlight, &Spotlight::spotActiveChanged, [this, window](bool active){
     if (active)
     {
-      window->setFlag(Qt::WindowTransparentForInput, false);
-      window->setFlag(Qt::WindowStaysOnTopHint, true);
+      window->setFlags(window->flags() & ~Qt::WindowTransparentForInput);
+      window->setFlags(window->flags() | Qt::WindowStaysOnTopHint);
       window->hide();
 //      window->showMaximized();
       window->showFullScreen();
     }
     else {
       if (m_dialog->isActiveWindow()) {
-        window->setFlag(Qt::WindowStaysOnTopHint, false);
+       	window->setFlags(window->flags() & ~Qt::WindowStaysOnTopHint);
         m_dialog->raise();
       }
       else {
-        window->setFlag(Qt::WindowTransparentForInput, true);
+    	window->setFlags(window->flags() | Qt::WindowTransparentForInput);
         window->hide();
       }
     }
@@ -113,18 +112,18 @@ ProjecteurApplication::ProjecteurApplication(int &argc, char **argv)
   [this, window, spotlight](bool active)
   {
     if (active) {
-      window->setFlag(Qt::WindowTransparentForInput, false);
-      window->setFlag(Qt::WindowStaysOnTopHint, false);
+      window->setFlags(window->flags() & ~Qt::WindowTransparentForInput);
+      window->setFlags(window->flags() & ~Qt::WindowStaysOnTopHint);
       if (!window->isVisible()) {
         window->showMaximized();
         m_dialog->raise();
       }
     }
     else if (spotlight->spotActive()) {
-      window->setFlag(Qt::WindowStaysOnTopHint, true);
+      window->setFlags(window->flags() | Qt::WindowStaysOnTopHint);
     }
     else {
-      window->setFlag(Qt::WindowTransparentForInput, true);
+        window->setFlags(window->flags() | Qt::WindowTransparentForInput);
       window->hide();
     }
   });
