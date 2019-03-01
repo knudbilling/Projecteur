@@ -123,7 +123,7 @@ ProjecteurApplication::ProjecteurApplication(int &argc, char **argv)
       window->setFlags(window->flags() | Qt::WindowStaysOnTopHint);
     }
     else {
-        window->setFlags(window->flags() | Qt::WindowTransparentForInput);
+      window->setFlags(window->flags() | Qt::WindowTransparentForInput);
       window->hide();
     }
   });
